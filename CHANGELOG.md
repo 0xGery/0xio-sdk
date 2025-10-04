@@ -2,6 +2,13 @@
 
 All notable changes to the 0xio Wallet SDK will be documented in this file.
 
+## [1.0.3] - 2025-10-04
+
+### Changed
+- Updated CHANGELOG.md with complete release notes for all versions
+
+---
+
 ## [1.0.2] - 2025-10-04
 
 ### Changed
