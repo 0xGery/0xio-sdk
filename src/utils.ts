@@ -182,6 +182,7 @@ export function createErrorMessage(code: ErrorCode, context?: string): string {
     [ErrorCode.TRANSACTION_FAILED]: 'Transaction failed to process',
     [ErrorCode.PERMISSION_DENIED]: 'Permission denied for this operation',
     [ErrorCode.WALLET_LOCKED]: 'Wallet is locked, please unlock first',
+    [ErrorCode.RATE_LIMIT_EXCEEDED]: 'Rate limit exceeded, please try again later',
     [ErrorCode.UNKNOWN_ERROR]: 'An unknown error occurred'
   };
   
