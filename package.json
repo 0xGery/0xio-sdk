@@ -1,0 +1,73 @@
+{
+  "name": "@0xgery/0xio-sdk",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Official TypeScript SDK for 0xio Wallet - Secure blockchain integration for dApps",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "browser": "dist/index.umd.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src/**/*.ts",
+    "test": "jest",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm run build && npm run typecheck"
+  },
+  "keywords": [
+    "0xio",
+    "wallet",
+    "blockchain",
+    "octra",
+    "dapp",
+    "web3",
+    "sdk",
+    "browser-extension",
+    "typescript",
+    "cryptocurrency",
+    "web3-sdk"
+  ],
+  "author": {
+    "name": "NullxGery",
+    "email": "0xgery@proton.me",
+    "url": "https://github.com/0xGery"
+  },
+  "license": "MIT",
+  "homepage": "https://0xio.xyz",
+  "bugs": {
+    "url": "https://github.com/0xGery/0xio-sdk/issues",
+    "email": "0xgery@proton.me"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/0xGery/0xio-sdk.git"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "devDependencies": {
+    "@rollup/plugin-replace": "^6.0.2",
+    "@rollup/plugin-typescript": "^11.1.6",
+    "@types/jest": "^29.5.12",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "eslint": "^8.57.0",
+    "jest": "^29.7.0",
+    "rollup": "^4.12.0",
+    "rollup-plugin-dts": "^6.1.0",
+    "tslib": "^2.6.2",
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}

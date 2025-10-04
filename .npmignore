@@ -1,0 +1,56 @@
+# Source files
+src/
+*.ts
+tsconfig.json
+!dist/**/*.d.ts
+
+# Build config
+rollup.config.js
+.eslintrc*
+.prettierrc*
+
+# Development
+node_modules/
+*.log
+.DS_Store
+.vscode/
+.idea/
+
+# Documentation (keep only README and LICENSE)
+docs/
+examples/
+*.md
+!README.md
+!LICENSE
+!CHANGELOG.md
+
+# Internal documentation
+SECURITY_AUDIT.md
+SECURITY_IMPROVEMENTS.md
+PRODUCTION_CHECKLIST.md
+COMMUNICATION_FLOW.md
+PROFESSIONAL_IMPROVEMENTS.md
+
+# Tests
+__tests__/
+tests/
+*.test.ts
+*.spec.ts
+coverage/
+.jest/
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+.travis.yml
+
+# Package files
+*.tgz
+package-lock.json
+yarn.lock
+pnpm-lock.yaml

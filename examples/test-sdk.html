@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>0xio SDK Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .status-card {
+            background: #f8f9fa;
+            border-left: 4px solid #6c757d;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+        .status-card.success { border-left-color: #28a745; background: #d4edda; }
+        .status-card.error { border-left-color: #dc3545; background: #f8d7da; }
+        .status-card.warning { border-left-color: #ffc107; background: #fff3cd; }
+        .button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+        }
+        .button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+        .button.success { background: #28a745; }
+        .button.warning { background: #ffc107; color: #212529; }
+        .button.danger { background: #dc3545; }
+        .logs {
+            background: #1e1e1e;
+            color: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+        .form-group {
+            margin: 15px 0;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        code {
+            background: #e9ecef;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>0xio SDK Test Page</h1>
+        <p>This page tests the 0xio Wallet SDK integration with the extension.</p>
+        
+        <div class="status-card" id="integration-status">
+            <h3>Integration Status</h3>
+            <p><strong>SDK Version:</strong> <span id="sdk-version">Loading...</span></p>
+            <p><strong>Extension Bridge:</strong> <span id="bridge-status">Checking...</span></p>
+            <p><strong>SDK Compatibility:</strong> <span id="compatibility-status">Checking...</span></p>
+        </div>
+
+        <div class="status-card" id="wallet-status">
+            <h3>Wallet Connection</h3>
+            <p><strong>Status:</strong> <span id="connection-status">Not initialized</span></p>
+            <p><strong>Address:</strong> <span id="wallet-address">None</span></p>
+            <p><strong>Balance:</strong> <span id="wallet-balance">0</span> OCT</p>
+        </div>
+
+        <div>
+            <h3>SDK Controls</h3>
+            <button id="init-sdk-btn" class="button">Initialize SDK</button>
+            <button id="connect-btn" class="button" disabled>Connect Wallet</button>
+            <button id="disconnect-btn" class="button warning" disabled>Disconnect</button>
+            <button id="get-balance-btn" class="button" disabled>Get Balance</button>
+            <button id="test-all-btn" class="button" disabled>Test All APIs</button>
+        </div>
+
+        <div>
+            <h3>Test Transaction</h3>
+            <div class="form-group">
+                <label for="test-recipient">Recipient:</label>
+                <input type="text" id="test-recipient" placeholder="Enter test address" value="OCT1234567890ABCDEF">
+            </div>
+            <div class="form-group">
+                <label for="test-amount">Amount:</label>
+                <input type="number" id="test-amount" step="0.000001" placeholder="0.000000" value="1">
+            </div>
+            <button id="send-test-tx-btn" class="button success" disabled>Send Test Transaction</button>
+        </div>
+
+        <button class="button" onclick="clearLogs()">Clear Logs</button>
+        
+        <div class="logs" id="logs">Initializing test page...</div>
+    </div>
+
+    <!-- Load the SDK -->
+    <script src="../dist/index.umd.js"></script>
+    
+    <script>
+        let sdk = null;
+        let wallet = null;
+        
+        // Logging function
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const logElement = document.getElementById('logs');
+            const prefix = type === 'error' ? '[ERROR]' : type === 'success' ? '[SUCCESS]' : type === 'warning' ? '[WARNING]' : '[INFO]';
+            logElement.innerHTML += `[${timestamp}] ${prefix} ${message}\n`;
+            logElement.scrollTop = logElement.scrollHeight;
+        }
+
+        function clearLogs() {
+            document.getElementById('logs').innerHTML = '';
+            log('Logs cleared');
+        }
+
+        // Update UI based on state
+        function updateUI() {
+            const initBtn = document.getElementById('init-sdk-btn');
+            const connectBtn = document.getElementById('connect-btn');
+            const disconnectBtn = document.getElementById('disconnect-btn');
+            const getBalanceBtn = document.getElementById('get-balance-btn');
+            const testAllBtn = document.getElementById('test-all-btn');
+            const sendTxBtn = document.getElementById('send-test-tx-btn');
+            
+            if (!wallet) {
+                initBtn.disabled = false;
+                initBtn.textContent = 'Initialize SDK';
+                connectBtn.disabled = true;
+                disconnectBtn.disabled = true;
+                getBalanceBtn.disabled = true;
+                testAllBtn.disabled = true;
+                sendTxBtn.disabled = true;
+            } else if (!wallet.isConnected()) {
+                initBtn.disabled = true;
+                initBtn.textContent = '✓ SDK Ready';
+                connectBtn.disabled = false;
+                disconnectBtn.disabled = true;
+                getBalanceBtn.disabled = true;
+                testAllBtn.disabled = false; // Some tests don't require connection
+                sendTxBtn.disabled = true;
+            } else {
+                initBtn.disabled = true;
+                connectBtn.disabled = true;
+                connectBtn.textContent = '✓ Connected';
+                disconnectBtn.disabled = false;
+                getBalanceBtn.disabled = false;
+                testAllBtn.disabled = false;
+                sendTxBtn.disabled = false;
+            }
+        }
+
+        // Initialize the page
+        async function initializePage() {
+            try {
+                log('Page loaded, checking SDK availability...');
+                
+                // Check if SDK is loaded
+                if (typeof OctraWalletSDK === 'undefined') {
+                    throw new Error('0xio SDK not loaded');
+                }
+
+                document.getElementById('sdk-version').textContent = OctraWalletSDK.SDK_VERSION || '1.0.0';
+
+                // Check compatibility
+                const compatibility = OctraWalletSDK.checkSDKCompatibility();
+                const compatibilityElement = document.getElementById('compatibility-status');
+                
+                if (compatibility.compatible) {
+                    compatibilityElement.textContent = 'Compatible';
+                    log('Browser compatibility check passed', 'success');
+                } else {
+                    compatibilityElement.textContent = 'Issues found';
+                    log('Browser compatibility issues: ' + compatibility.issues.join(', '), 'warning');
+                    compatibility.recommendations.forEach(rec => log('TIP: ' + rec, 'info'));
+                }
+                
+                // Check for extension bridge
+                setTimeout(() => {
+                    const bridgeStatus = document.getElementById('bridge-status');
+                    // This would be detected by the extension's content script
+                    bridgeStatus.textContent = 'Waiting for extension detection...';
+                    log('Waiting for extension to detect SDK integration...');
+                    
+                    // Simulate extension detection check
+                    setTimeout(() => {
+                        bridgeStatus.textContent = 'Bridge should be injected if extension detects SDK';
+                        log('Extension should detect SDK usage and inject communication bridge', 'info');
+                    }, 2000);
+                }, 1000);
+                
+                updateUI();
+                
+            } catch (error) {
+                log(`Page initialization failed: ${error.message}`, 'error');
+                document.getElementById('integration-status').className = 'status-card error';
+            }
+        }
+
+        // Initialize SDK
+        async function initializeSDK() {
+            try {
+                log('Initializing 0xio Wallet SDK...');
+                document.getElementById('connection-status').textContent = 'Initializing...';
+
+                wallet = new OctraWalletSDK.OctraWallet({
+                    appName: 'SDK Test Page',
+                    appDescription: 'Testing the 0xio Wallet SDK integration',
+                    appVersion: '1.0.0',
+                    debug: true,
+                    requiredPermissions: ['read_balance', 'send_transactions']
+                });
+                
+                // Setup event listeners
+                wallet.on('connect', (event) => {
+                    log(`Wallet connected: ${event.address}`, 'success');
+                    document.getElementById('connection-status').textContent = 'Connected';
+                    document.getElementById('wallet-address').textContent = event.address;
+                    document.getElementById('wallet-balance').textContent = event.balance.total;
+                    document.getElementById('wallet-status').className = 'status-card success';
+                    updateUI();
+                });
+                
+                wallet.on('disconnect', () => {
+                    log('Wallet disconnected', 'info');
+                    document.getElementById('connection-status').textContent = 'Disconnected';
+                    document.getElementById('wallet-address').textContent = 'None';
+                    document.getElementById('wallet-balance').textContent = '0';
+                    document.getElementById('wallet-status').className = 'status-card warning';
+                    updateUI();
+                });
+                
+                wallet.on('balanceChanged', (event) => {
+                    log(`Balance updated: ${event.newBalance.total} OCT`, 'info');
+                    document.getElementById('wallet-balance').textContent = event.newBalance.total;
+                });
+                
+                wallet.on('error', (event) => {
+                    log(`Wallet error: ${event.message}`, 'error');
+                    document.getElementById('wallet-status').className = 'status-card error';
+                });
+                
+                // Initialize the SDK
+                const initialized = await wallet.initialize();
+                
+                if (initialized) {
+                    log('SDK initialized successfully!', 'success');
+                    document.getElementById('connection-status').textContent = 'Ready to connect';
+                    document.getElementById('wallet-status').className = 'status-card warning';
+                } else {
+                    throw new Error('SDK initialization returned false');
+                }
+                
+                updateUI();
+                
+            } catch (error) {
+                log(`SDK initialization failed: ${error.message}`, 'error');
+                document.getElementById('connection-status').textContent = 'Initialization failed';
+                document.getElementById('wallet-status').className = 'status-card error';
+                updateUI();
+            }
+        }
+
+        // Connect to wallet
+        async function connectWallet() {
+            try {
+                log('Attempting to connect to wallet...');
+                await wallet.connect();
+            } catch (error) {
+                log(`Connection failed: ${error.message}`, 'error');
+            }
+        }
+
+        // Disconnect from wallet
+        async function disconnectWallet() {
+            try {
+                log('Disconnecting from wallet...');
+                await wallet.disconnect();
+            } catch (error) {
+                log(`Disconnect failed: ${error.message}`, 'error');
+            }
+        }
+
+        // Get balance
+        async function getBalance() {
+            try {
+                log('Getting wallet balance...');
+                const balance = await wallet.getBalance(true);
+                log(`Balance: ${balance.total} OCT (Public: ${balance.public}, Private: ${balance.private || 0})`, 'success');
+            } catch (error) {
+                log(`Get balance failed: ${error.message}`, 'error');
+            }
+        }
+
+        // Test all APIs
+        async function testAllAPIs() {
+            try {
+                log('=== Testing All SDK APIs ===', 'info');
+                
+                // Test SDK info
+                log(`SDK Version: ${OctraWalletSDK.SDK_VERSION}`, 'info');
+                log(`SDK Ready: ${wallet ? wallet.isReady() : false}`, 'info');
+                log(`Wallet Connected: ${wallet ? wallet.isConnected() : false}`, 'info');
+                
+                if (wallet && wallet.isConnected()) {
+                    // Test connection info
+                    const connectionInfo = wallet.getConnectionInfo();
+                    log(`Connection Info: ${JSON.stringify(connectionInfo)}`, 'info');
+                    
+                    // Test address
+                    const address = wallet.getAddress();
+                    log(`Address: ${address}`, 'info');
+                    
+                    // Test network info
+                    const networkInfo = await wallet.getNetworkInfo();
+                    log(`Network: ${networkInfo.name} (${networkInfo.id})`, 'info');
+                    
+                    // Test balance
+                    await getBalance();
+                } else {
+                    log('Wallet not connected - skipping connected-only tests', 'warning');
+                }
+                
+                log('=== API Test Complete ===', 'success');
+                
+            } catch (error) {
+                log(`API test failed: ${error.message}`, 'error');
+            }
+        }
+
+        // Send test transaction
+        async function sendTestTransaction() {
+            try {
+                const recipient = document.getElementById('test-recipient').value.trim();
+                const amount = parseFloat(document.getElementById('test-amount').value);
+                
+                if (!recipient || !amount) {
+                    log('Please enter recipient and amount', 'warning');
+                    return;
+                }
+                
+                log(`Sending test transaction: ${amount} OCT to ${recipient}...`);
+                
+                const result = await wallet.sendTransaction({
+                    to: recipient,
+                    amount: amount,
+                    message: 'Test transaction from SDK test page'
+                });
+                
+                if (result.success) {
+                    log(`Transaction sent successfully! Hash: ${result.txHash}`, 'success');
+                } else {
+                    log(`Transaction failed: ${result.message}`, 'error');
+                }
+                
+            } catch (error) {
+                log(`Transaction failed: ${error.message}`, 'error');
+            }
+        }
+
+        // Event handlers
+        document.getElementById('init-sdk-btn').addEventListener('click', initializeSDK);
+        document.getElementById('connect-btn').addEventListener('click', connectWallet);
+        document.getElementById('disconnect-btn').addEventListener('click', disconnectWallet);
+        document.getElementById('get-balance-btn').addEventListener('click', getBalance);
+        document.getElementById('test-all-btn').addEventListener('click', testAllAPIs);
+        document.getElementById('send-test-tx-btn').addEventListener('click', sendTestTransaction);
+
+        // Initialize page on load
+        window.addEventListener('DOMContentLoaded', initializePage);
+    </script>
+</body>
+</html>
