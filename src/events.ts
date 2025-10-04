@@ -1,5 +1,5 @@
 /**
- * Octra Wallet SDK - Event System
+ * 0xio Wallet SDK - Event System
  * Type-safe event emitter for wallet events
  */
 
@@ -26,7 +26,7 @@ export class EventEmitter {
     this.listeners.get(eventType)!.add(listener);
     
     if (this.debug) {
-      // console.log(`[Octra SDK] Added listener for '${eventType}' event`);
+      // console.log(`[0xio SDK] Added listener for '${eventType}' event`);
     }
   }
 
@@ -43,7 +43,7 @@ export class EventEmitter {
       }
       
       if (this.debug) {
-        // console.log(`[Octra SDK] Removed listener for '${eventType}' event`);
+        // console.log(`[0xio SDK] Removed listener for '${eventType}' event`);
       }
     }
   }
@@ -73,7 +73,7 @@ export class EventEmitter {
     const eventListeners = this.listeners.get(eventType);
     if (eventListeners && eventListeners.size > 0) {
       if (this.debug) {
-        // console.log(`[Octra SDK] Emitting '${eventType}' event to ${eventListeners.size} listeners`, data);
+        // console.log(`[0xio SDK] Emitting '${eventType}' event to ${eventListeners.size} listeners`, data);
       }
       
       // Create a copy to avoid issues if listeners modify the set during iteration
@@ -83,11 +83,11 @@ export class EventEmitter {
         try {
           listener(event);
         } catch (error) {
-          // console.error(`[Octra SDK] Error in event listener for '${eventType}':`, error);
+          // console.error(`[0xio SDK] Error in event listener for '${eventType}':`, error);
         }
       }
     } else if (this.debug) {
-      // console.log(`[Octra SDK] No listeners for '${eventType}' event`);
+      // console.log(`[0xio SDK] No listeners for '${eventType}' event`);
     }
   }
 
@@ -98,12 +98,12 @@ export class EventEmitter {
     if (eventType) {
       this.listeners.delete(eventType);
       if (this.debug) {
-        // console.log(`[Octra SDK] Removed all listeners for '${eventType}' event`);
+        // console.log(`[0xio SDK] Removed all listeners for '${eventType}' event`);
       }
     } else {
       this.listeners.clear();
       if (this.debug) {
-        // console.log('[Octra SDK] Removed all event listeners');
+        // console.log('[0xio SDK] Removed all event listeners');
       }
     }
   }

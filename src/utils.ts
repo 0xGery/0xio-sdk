@@ -1,5 +1,5 @@
 /**
- * Octra Wallet SDK - Utilities
+ * 0xio Wallet SDK - Utilities
  * Helper functions for validation, formatting, and common operations
  */
 
@@ -172,7 +172,7 @@ export function fromMicroOCT(microAmount: string | number): number {
  */
 export function createErrorMessage(code: ErrorCode, context?: string): string {
   const baseMessages: Record<ErrorCode, string> = {
-    [ErrorCode.EXTENSION_NOT_FOUND]: 'Octra Wallet extension is not installed or enabled',
+    [ErrorCode.EXTENSION_NOT_FOUND]: '0xio Wallet extension is not installed or enabled',
     [ErrorCode.CONNECTION_REFUSED]: 'Connection to wallet was refused',
     [ErrorCode.USER_REJECTED]: 'User rejected the request',
     [ErrorCode.INSUFFICIENT_BALANCE]: 'Insufficient balance for this transaction',

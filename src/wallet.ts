@@ -69,7 +69,7 @@ export class OctraWallet extends EventEmitter {
       if (!communicationReady) {
         throw new OctraWalletError(
           ErrorCode.EXTENSION_NOT_FOUND,
-          'Failed to establish communication with Octra Wallet extension'
+          'Failed to establish communication with 0xio Wallet extension'
         );
       }
 

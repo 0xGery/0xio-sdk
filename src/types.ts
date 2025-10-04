@@ -1,6 +1,6 @@
 /**
- * Octra Wallet SDK - Type Definitions
- * Comprehensive type system for Octra wallet integration
+ * 0xio Wallet SDK - Type Definitions
+ * Comprehensive type system for 0xio wallet integration with Octra Network
  */
 
 // Core wallet types

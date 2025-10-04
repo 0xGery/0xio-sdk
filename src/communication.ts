@@ -173,7 +173,7 @@ export class ExtensionCommunicator extends EventEmitter {
     if (!this.hasExtensionContext()) {
       throw new OctraWalletError(
         ErrorCode.EXTENSION_NOT_FOUND,
-        'Octra Wallet extension is not installed or available',
+        '0xio Wallet extension is not installed or available',
         {
           method,
           params,
@@ -269,7 +269,7 @@ export class ExtensionCommunicator extends EventEmitter {
         return;
       }
 
-      // Check if it's an Octra SDK response
+      // Check if it's a 0xio SDK response
       if (!event.data || event.data.source !== 'octra-sdk-bridge') {
         return;
       }
