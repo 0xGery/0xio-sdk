@@ -1,6 +1,6 @@
 # 0xio Wallet SDK
 
-A comprehensive TypeScript/JavaScript SDK that enables seamless integration between decentralized applications (DApps) and the 0xio Wallet browser extension. This toolkit provides developers with a secure, type-safe, and user-friendly way to interact with the 0xio blockchain network.
+A comprehensive TypeScript/JavaScript SDK that enables seamless integration between decentralized applications (DApps) and the 0xio Wallet browser extension. This toolkit provides developers with a secure, type-safe, and user-friendly way to interact with the Octra blockchain network.
 
 ## What is this SDK?
 
@@ -10,7 +10,7 @@ The 0xio Wallet SDK bridges the gap between web applications and blockchain func
 - **Manage Transactions**: Send regular and private transactions with full type safety
 - **Handle Balances**: Read public and encrypted private balance information
 - **Event-Driven Architecture**: React to wallet events like balance changes, network switches, and connection status
-- **Private Features**: Support for 0xio's unique private balance encryption and private transfer system
+- **Private Features**: Support for Octra Network's unique private balance encryption and private transfer system
 - **Multi-Framework Support**: Works with React, Vue, Svelte, and vanilla JavaScript applications
 
 ## Why use this SDK?
@@ -24,9 +24,9 @@ The 0xio Wallet SDK bridges the gap between web applications and blockchain func
 - **Developer Friendly**: Advanced debugging tools and development mode logging
 - **Production Ready**: Clean builds with zero console noise in production
 
-> **Disclaimer**: This is an unofficial, community-built project for the 0xio network. It is not affiliated with, endorsed by, or maintained by the official 0xio team.
+> **Disclaimer**: This is an unofficial, community-built project for the Octra Network. It is not affiliated with, endorsed by, or maintained by the official Octra team.
 
-> **Note**: This SDK is developed by NullxGery (0xGery) for the 0xio network ecosystem.
+> **Note**: This SDK is developed by NullxGery (0xGery) for the Octra Network ecosystem.
 
 ## What's New in v1.0.0
 
@@ -641,4 +641,4 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 ---
 
-Built by NullxGery (0xGery) for the 0xio network
+Built by NullxGery (0xGery) for the Octra Network
